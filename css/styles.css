@@ -11,7 +11,7 @@ body{
     font-weight: bold;
     text-align: center;
     margin-top: 1%;
-    animation: color-change 4s infinite;
+    animation: color-change 6s infinite;
 }
 
 
@@ -45,6 +45,9 @@ body{
     gap: 10px;
 }
 
+
+
+
 #size{
     grid-area: size;
 }
@@ -54,7 +57,9 @@ body{
     
 }
 
-
+@media screen and (max-width: 400px) and (max-heigth: 400px) {
+    
+}
 
 #desc{
     font-family: fantasy;
@@ -113,14 +118,15 @@ body{
 
 table{
     border-collapse: collapse;
-    margin: 20px auto;
+    margin: 1px auto;
+
 }
 td{
     width: 75px;
     height: 75px;
     border: 2px solid black;
     text-align: center;
-    font-size: 30px;
+    font-size: xx-large;
     cursor: pointer;
 }
 
@@ -151,4 +157,5 @@ div.end{
     font-size: xx-large;
     padding-top: 50px;
     padding-bottom: 20px;
+    display: none;
 }
