@@ -5,14 +5,26 @@ body{
     background-color: palegoldenrod;
 }
 
+#meta_container{
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-areas: 
+    "player name pk"
+    ;
+}
+
 #meta_main{
+
     color: red;
-    font-size: 3em;
+    font-size: 2em;
     font-weight: bold;
     text-align: center;
     margin-top: 1%;
     animation: color-change 6s infinite;
 }
+
+
 
 
 @keyframes color-change {
@@ -132,30 +144,30 @@ td{
 
 
 
-
-
-
-
 #form-box {
     border: 2px solid #ccc;
     padding: 20px;
     border-radius: 5px;
-  }
+}
   h2 {
     text-align: center;
-  }
+}
   label {
     display: block;
     margin-bottom: 10px;
-  }
+}
   input[type="radio"] {
     margin-right: 5px;
-  }
+}
+
+
+
+
 
 div.end{
     text-align: center;
     font-size: xx-large;
-    padding-top: 50px;
-    padding-bottom: 20px;
     display: none;
 }
+
+

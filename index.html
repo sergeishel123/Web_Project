@@ -6,10 +6,16 @@
     <title>Крестики-нолики</title>
     <link rel = "stylesheet" href = "css/styles.css">
     <script defer src = "js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js"></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'>
+
 </head>
 <body>
-
-<h1 id = "meta_main">Игра "Крестики-нолики"</h1>
+<div id = "meta_container">
+<h2>Игрок / Компьютер</h2>
+<h2 id = "meta_main">Игра "Крестики-нолики"</h2>
+<h2>Счёт: </h2>
+</div>
 <div id = "input">
     <div id = "size">
         <label for="gridSize" id = "desc">Размер поля:</label>
@@ -31,8 +37,12 @@
 
 <div id="board_html">
 </div>
+
+
 <div class = "end">
     Возвращайтесь снова!
 </div>
+
+
 </body>
 </html>

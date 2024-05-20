@@ -1,18 +1,21 @@
-
 let currentPlayer = 'X';
 let gridSize = 3;
 let gameBoard = [];
 let level = "easy";
 let count_free;
+let main_start = false;
+let count_user_wins = 0;
+let count_computer_wins = 0;
 let footer = document.getElementsByClassName("end")[0];
-
+let timer;
 
 document.getElementById("submit").addEventListener("click",createGrid,true);
-
+document.getElementById("meta_container").children[2].textContent += `${count_user_wins} : ${count_computer_wins}`;
 
 
 function createGrid(is_started) {
     footer.style.display = "none";
+    clearTimeout(timer);
     gridSize = Number(document.getElementById('gridSize').value);
     gameBoard = [];
     for (let i = 0; i < gridSize; i++) {
@@ -21,6 +24,7 @@ function createGrid(is_started) {
             gameBoard[i][j] = "";
         }
     }
+    main_start = true;
     count_free = gridSize * gridSize;
     generateBoard(is_started);
 }
@@ -39,7 +43,7 @@ function generateBoard(is_started){
             col.textContent = gameBoard[i][j];
             col.id = `${i} ${j}`;
             row.appendChild(col);
-            if (is_started){
+            if (main_start){
                 col.addEventListener("click", set_user);
             }
         }
@@ -49,8 +53,9 @@ function generateBoard(is_started){
 }
 
 
+
 function set_user(){
-    if (this.textContent)
+    if (this.textContent || !main_start)
         return;
     count_free-= 1;
     this.textContent = "X";
@@ -59,20 +64,22 @@ function set_user(){
     y = Number(this.id[2]);
     gameBoard[x][y] = "X";
     if (check_Win(x,y)){
-        setTimeout(reset,1000 * 60);
-        footer.style.display = "block"
+        count_user_wins += 1;
+        setTimeout(function(){alert_message("Вы выиграли!","images/funny.jpg","Здорово!","#00ff55")},300);
         return;
     }
-    setTimeout(set_computer,500);
+    else if (checkDraw()){
+        setTimeout(function(){alert_message("Ничья!","images/net.jpg","Я лишь поддался!","grey")},300);
+    }
+    setTimeout(set_computer,300);
 }
 
 
 function set_computer(){
-    if (count_free <= 0)
+    if (count_free <= 0 || !main_start)
         return;
     count_free -= 1;
-    let free_cells = gameBoard.filter(el => el == "");
-    console.log(free_cells);
+    //let free_cells = gameBoard.filter(el => el == "");
     if (level == "easy"){
         let is_succes = false;
         let first;
@@ -85,16 +92,20 @@ function set_computer(){
                 is_succes = true;
                 gameBoard[first][second] = "0";
                 document.getElementById(`${first} ${second}`).textContent = "0";
+                console.log(count_free);
                 if(check_Win(first,second)){
-                    setTimeout(reset,1000 * 60);
-                    footer.style.display = "block";
-                    
+                    count_computer_wins += 1;
+                    setTimeout(function(){alert_message("Выйграл компьютер!","images/sad.jpg","Реванш!","red")},300);
                     return;
+                }
+                else if (checkDraw()){
+                    setTimeout(function(){alert_message("Ничья!","images/net.jpg","Я лишь поддался!","grey")},300);
                 }
             }
         }
     }
 }
+
 
 
 function check_Win(row,col){
@@ -150,11 +161,7 @@ function check_line(line){
 
 
 function checkDraw() {
-    return gameBoard.every(
-        row => {row.every(
-            cell => cell != ''
-        )}
-    );
+    return count_free <= 0;
 }
 
 
@@ -170,4 +177,23 @@ function wining(massiv){
         document.getElementById(element).style.backgroundColor = "gold";
         document.getElementById(element).style.fontWeight = "bold";
     });
+    main_start = false;
+    document.getElementById("meta_container").children[2].textContent = `Счёт  ${count_user_wins} : ${count_computer_wins}`;
 }
+
+function alert_message(title,imageUrl,prompt,color_button){
+    swal({
+        title: title,
+        imageUrl: imageUrl,
+        imageWidth: 400,
+        imageHeight: "80%",
+        background: "powderblue",
+        confirmButtonText: prompt,
+        confirmButtonColor: color_button
+      },"With some body text!");
+    footer.style.display = "block";
+    main_start = false;
+    timer = setTimeout(reset,1000 * 60);
+}
+
+
