@@ -15,7 +15,6 @@ body{
 }
 
 #meta_main{
-
     color: red;
     font-size: 2em;
     font-weight: bold;
@@ -168,6 +167,7 @@ div.end{
     text-align: center;
     font-size: xx-large;
     display: none;
+    animation: color-change 10s infinite;
 }
 
 
