@@ -1,48 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data_theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" con5tent="width=device-width, initial-scale=1.0">
     <title>Крестики-нолики</title>
     <link rel = "stylesheet" href = "css/styles.css">
+    <script defer src = "js/theme.js"></script>
     <script defer src = "js/script.js"></script>
+    <script defer src = "js/requests.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.all.min.js"></script>
     <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/sweetalert2@7.12.15/dist/sweetalert2.min.css'>
 
 </head>
 <body>
-<div id = "meta_container">
-<h2>Игрок / Компьютер</h2>
-<h2 id = "meta_main">Игра "Крестики-нолики"</h2>
-<h2>Счёт: </h2>
-</div>
-<div id = "input">
-    <div id = "size">
-        <label for="gridSize" id = "desc">Размер поля:</label>
-        <input type="number" id="gridSize" min="3"max= "8" value="3">
+<div class = "main">
+    <div id = "meta_container">
+    <h2>Игрок / Компьютер</h2>
+    <h2 id = "meta_main" class="meta_main">Игра "Крестики-нолики"</h2>
+    <h2 id = "score">Счёт: </h2>
     </div>
-    <input type = "button" id = "submit" value = "Новая игра">
-    <div id = "level">
-        <form id="difficultyForm">
-            <label id = "label2">Уровень сложности</label>
+    <div id = "input">
+        <div id = "size">
+            <label for="gridSize" id = "desc">Размер поля:</label>
+            <input type="number" id="gridSize" min="3"max= "8" value="3">
+        </div>
+        <input type = "button" id = "submit" value = "Новая игра">
+        <div id = "level">
+            <form id="difficultyForm">
+                <label id = "label2">Уровень сложности</label>
+                <label>
+                    <input type="radio" name="difficulty" value="easy" checked><span id = "easy">Лёгкий</span>
+                </label>
+                <label>
+                    <input type="radio" name="difficulty" value="hard"><span id = "hard" >Сложный</span>
+                </label>
+            </form>
+        </div>
+    </div>
+
+
+    <div id = "container">
+        <form id="theme_choice">
+            <label id = "label_theme">Внешний вид</label>
             <label>
-                <input type="radio" name="difficulty" value="easy" checked><span id = "easy">Лёгкий</span>
+                <input type="radio" name="theme" value="light" checked><span id = "light_theme">Светлая тема</span>
             </label>
             <label>
-                <input type="radio" name="difficulty" value="hard"><span id = "hard" >Сложный</span>
+                <input type="radio" name="theme" value="dark"><span id = "dark_theme" >Тёмная тема</span>
             </label>
-          </form>
+        </form>
+        <div id="board_html">
+        </div>
+        <div id = "record">
+            <h2>
+                Ваш рекорд
+            </h2>
+        </div>
     </div>
+    <div class = "end">
+        Возвращайтесь снова!
+    </div>
+
 </div>
-
-<div id="board_html">
-</div>
-
-
-<div class = "end">
-    Возвращайтесь снова!
-</div>
-
-
 </body>
 </html>

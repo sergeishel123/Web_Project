@@ -8,19 +8,40 @@ let count_computer_wins = 0;
 let footer = document.getElementsByClassName("end")[0];
 let timer;
 let gameover = false;
-const board = [];
-for (let i = 0; i < gridSize; i++) {
-  board[i] = [];
-  for (let j = 0; j < gridSize; j++) {
-    board[i][j] = 0; // 0 - пусто, 1 - крестик, 2 - нолик
-  }
+let dom_el_score = document.getElementById("score");
+
+
+//Класс количества очков
+class Scoring{
+    _points;
+    constructor(player,points){
+        this.player = player;
+        this._points = points;
+    }
+
+    get points(){
+        return this._points;
+    }
+
+    set points(value){
+        if (value >= 0){
+            this._points = this._points;
+        }
+    }
+    increase_points(){
+        this._points++;
+    }
+
+    static get_score_on_table(first_sc,second_sc,dom_el){
+        dom_el.textContent = `Счёт ${first_sc.points} : ${second_sc.points}`;
+    }
 }
 
-
+let User_scoring = new Scoring("user",0);
+let Computer_scoring = new Scoring("computer",0);
 
 document.getElementById("submit").addEventListener("click",() => {createGrid(true)});
-document.getElementById("meta_container").children[2].textContent += `${count_user_wins} : ${count_computer_wins}`;
-
+Scoring.get_score_on_table(User_scoring,Computer_scoring,dom_el_score);
 
 
 function createGrid(is_started) {
@@ -42,7 +63,7 @@ function generateBoard(is_started){
     const board_html = document.getElementById('board_html');
     board_html.innerHTML = "";
     let table = document.createElement("table");
-    level = document.querySelector('input[name="difficulty"]:checked').value;
+    let level = document.querySelector('input[name="difficulty"]:checked').value;
     let row;
     let col;
     for(let i = 0;i < gridSize;i++){
@@ -74,9 +95,9 @@ function set_user(){
     this.textContent = "X";
     if (evaluate(gameBoard,"X")){
         gameover = true;
-        count_user_wins += 1;
         setTimeout(function(){alert_message("Вы выиграли!","images/funny.jpg","Здорово!","#00ff55")},300);
-        document.getElementById("meta_container").children[2].textContent = `Счёт  ${count_user_wins} : ${count_computer_wins}`;
+        User_scoring.increase_points();
+        Scoring.get_score_on_table(User_scoring,Computer_scoring,dom_el_score);
         return;
     }
     else if (checkDraw()){
@@ -120,9 +141,9 @@ function set_computer(dangerous,possible){
                 gameBoard[first][second] = "0";
                 document.getElementById(`${first} ${second}`).textContent = "0";
                 if(evaluate(gameBoard,"0")){
-                    count_computer_wins += 1;
+                    Computer_scoring.increase_points();
                     setTimeout(function(){alert_message("Выйграл компьютер!","images/sad.jpg","Реванш!","red")},300);
-                    document.getElementById("meta_container").children[2].textContent = `Счёт  ${count_user_wins} : ${count_computer_wins}`;
+                    Scoring.get_score_on_table(User_scoring,Computer_scoring, dom_el_score);
                     return;
                 }
                 else if (checkDraw()){
@@ -134,9 +155,8 @@ function set_computer(dangerous,possible){
     else if (level == "hard"){
         difficult(dangerous,possible);
         if(evaluate(gameBoard,"0")){
-            count_computer_wins += 1;
-            setTimeout(function(){alert_message("Выйграл компьютер!","images/sad.jpg","Реванш!","red")},300);
-            document.getElementById("meta_container").children[2].textContent = `Счёт  ${count_user_wins} : ${count_computer_wins}`;
+            Computer_scoring4.increase_points();
+            Scoring.get_score_on_table(User_scoring,Computer_scoring,dom_el_score);
             return;
         }
         else if (checkDraw()){
@@ -207,6 +227,7 @@ function checkDraw() {
 }
 
 
+
 function reset(){
     createGrid();
     //return 0;
@@ -214,6 +235,9 @@ function reset(){
 
 createGrid(false);
 
+function t(){
+
+}
 
 function wining(massiv){
     massiv.forEach(element => {
@@ -446,3 +470,5 @@ function dangerous_possible(row,col,){
     }
     return [dangerous,possible];
 }
+
+
