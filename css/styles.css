@@ -264,8 +264,8 @@ div.end{
     border-radius: 50%;
     cursor: pointer;
     font-family:fantasy;
-    font-size:xx-large;
+    font-size:40px;
     font-weight:normal;
-    animation: color-change 6s infinite;
+    animation: color-change 10s infinite;
 }
 

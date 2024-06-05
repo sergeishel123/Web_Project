@@ -46,7 +46,7 @@ divv.style.position = "absolute";
 divv.style.bottom = "5%";
 divv.style.width = "100%";
 divv.style.textAlign = "center";
-let contin = document.createElement("h2");
+let contin = document.createElement("h1");
 
 contin.style.position = "relative";
 contin.textContent = 'Для продолжения нажмите на белую область';

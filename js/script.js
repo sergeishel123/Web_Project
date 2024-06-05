@@ -63,7 +63,7 @@ function generateBoard(is_started){
     const board_html = document.getElementById('board_html');
     board_html.innerHTML = "";
     let table = document.createElement("table");
-    let level = document.querySelector('input[name="difficulty"]:checked').value;
+    level = document.querySelector('input[name="difficulty"]:checked').value;
     let row;
     let col;
     for(let i = 0;i < gridSize;i++){
@@ -106,17 +106,19 @@ function set_user(){
     let dangerous;
     let possible;
     if (level == "hard"){
-        let try_X_res = dangerous_possible(x,y,"X");
+        let try_X_res = dangerous_possible(x,y);
         dangerous = try_X_res[0];
-        possible = try_X_res[1];
+        //possible = try_X_res[1];
         if (dangerous.length > 0 && dangerous.every(el =>el >= 0)){
             possible = [];
+            dangerous = try_X_res[0];
+            console.log(try_X_res[0]);       
+
         }
-        else{
-            let try_0_res = dangerous_possible(x,y,"0");
-            dangerous = try_0_res[0];
-            
-            };
+        //else{
+            //let try_0_res = dangerous_possible(x,y,"0");
+            //dangerous = try_0_res[0];
+            //};
         }
         setTimeout(function(){set_computer(dangerous,possible)},300);
     }
@@ -155,8 +157,9 @@ function set_computer(dangerous,possible){
     else if (level == "hard"){
         difficult(dangerous,possible);
         if(evaluate(gameBoard,"0")){
-            Computer_scoring4.increase_points();
+            Computer_scoring.increase_points();
             Scoring.get_score_on_table(User_scoring,Computer_scoring,dom_el_score);
+            setTimeout(function(){alert_message("Выйграл компьютер!","images/sad.jpg","Реванш!","red")},300);
             return;
         }
         else if (checkDraw()){
@@ -166,55 +169,6 @@ function set_computer(dangerous,possible){
 }
 
 
-/*
-function check_Win(row,col){
-    let massiv = [];
-    if (check_line(gameBoard[row])){
-        for(let i = 0;i < gridSize;i++){
-            massiv.push(`${row} ${i}`)
-        }
-        wining(massiv);
-        return true;
-    }
-    let columns = [];
-    let main_diagonal = [];
-    let side_diagonal = [];
-    let special = []
-    for(let i = 0;i < gridSize;i++){
-        columns.push(gameBoard[i][col]);
-        main_diagonal.push(gameBoard[i][i]);
-        for(let j = 0;j < gridSize;j++){
-            if (i + j + 1 == gridSize){
-                side_diagonal.push(gameBoard[i][j]);
-                special.push(`${i} ${j}`);
-            }
-        }
-    }
-    if (check_line(columns)){
-        for(let i = 0;i < gridSize;i++){
-            massiv.push(`${i} ${col}`);
-        }
-        wining(massiv);
-        return true;
-    }
-
-    if (check_line(main_diagonal)){
-        for(let i  = 0;i < gridSize;i++){
-            massiv.push(`${i} ${i}`);
-        }
-        wining(massiv);
-        return true;
-    }
-
-    if (check_line(side_diagonal)){
-        wining(special);
-        return true;
-    }
-
-    return false;
-}
-
-*/
 
 function check_line(line, player){
     //return line.every(el => el == 'X') || line.every(el => el == "0");
@@ -379,22 +333,12 @@ function emptySquares() {
     return moves;
 }
 
-function difficult(dangerous,possible){
+function difficult(dangerous){
     let main_diagonal = get_main_diagonal();
     let side_diagonal = get_side_diagonal();
     if(dangerous.length > 0 && dangerous.every(el =>el >= 0)){
         let first = dangerous[0];
         let second = dangerous[1];
-        let cell = gameBoard[first][second];
-        if (cell == ""){
-            gameBoard[first][second] = "0";
-            document.getElementById(`${first} ${second}`).textContent = "0";
-            return;
-        }
-    }
-    if (possible.length > 0 && possible.every(el => el >= 0)){
-        let first = possible[0];
-        let second = possible[1];
         let cell = gameBoard[first][second];
         if (cell == ""){
             gameBoard[first][second] = "0";
@@ -429,9 +373,9 @@ function dangerous_possible(row,col,){
         ind = gameBoard[row].indexOf("");
         if (row_check == gridSize - 1)
             dangerous = [row, ind];
-        else possible = [row,ind];
+        //else possible = [row,ind];
     }
-
+    console.log(row_check);
     let columns = [];
     let main_diagonal = [];
     let side_diagonal = [];
@@ -445,20 +389,21 @@ function dangerous_possible(row,col,){
         }
     }
     let col_check = check_line(columns,"X");
+    console.log(col_check);
     if (col_check == gridSize - 1 || col_check == 0){
         ind = columns.indexOf("");
         if (col_check == gridSize - 1)
             dangerous = [ind,col];
-        else possible = [ind,col];
+        //else possible = [ind,col];
     }
     let main_diagonal_check = check_line(main_diagonal,"X");
-
+    console.log(main_diagonal_check);
 
     if (main_diagonal_check == gridSize - 1 || main_diagonal_check == 0){
         ind = main_diagonal.indexOf(""); 
         if (main_diagonal_check == gridSize - 1)
             dangerous = [ind,ind];
-        else possible = [ind,ind];
+        //else possible = [ind,ind];
     }
 
     side_diagonal_check = check_line(side_diagonal,"X");
@@ -466,9 +411,10 @@ function dangerous_possible(row,col,){
         ind = side_diagonal.indexOf("");
         if (side_diagonal_check == gridSize - 1)
             dangerous = [ind, gridSize - ind - 1];
-        else possible = [ind,gridSize - ind - 1 ];
+        //else possible = [ind,gridSize - ind - 1 ];
     }
-    return [dangerous,possible];
+    //return [dangerous,possible];
+    return [dangerous];
 }
 
 

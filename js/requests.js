@@ -1,4 +1,4 @@
-let information;
+
 fetch('https://api.adviceslip.com/advice')
      .then(response => response.json())
      .then(data => translate(data.slip.advice));
@@ -24,5 +24,6 @@ function translate(information){
 }
 
 function modalCloseButton_add(){
-    document.getElementsByClassName("modal-close")[0].textContent = textCon;
+    if (document.getElementsByClassName("modal-close")[0])
+        document.getElementsByClassName("modal-close")[0].textContent = textCon;
 }
