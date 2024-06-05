@@ -40,7 +40,7 @@ class Scoring{
     }
     insert_local(other){
         if (window.localStorage){
-            if (this._points - other._points >= localStorage.getItem("record_max_diff")){
+            if (this._points - other._points > localStorage.getItem("record_max_diff")){
                 localStorage.setItem("record",`${this._points} : ${other._points}`);
                 document.getElementById("record_value").textContent = localStorage["record"];
                 max_different_score = this._points - other._points;
