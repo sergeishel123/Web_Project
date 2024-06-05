@@ -222,8 +222,18 @@ div.end{
 #record{
     grid-area: "record";
     font-size: large;
+    display: none;
 }
 
+#record_value{
+    color: blue;
+}
+
+
+
+#record_value::first-letter{
+    color: red;
+}
 
 
 
@@ -266,6 +276,6 @@ div.end{
     font-family:fantasy;
     font-size:40px;
     font-weight:normal;
-    animation: color-change 10s infinite;
+    animation: color-change 15s infinite;
 }
 

@@ -9,7 +9,7 @@ let footer = document.getElementsByClassName("end")[0];
 let timer;
 let gameover = false;
 let dom_el_score = document.getElementById("score");
-
+let max_different_score = 0;
 
 //Класс количества очков
 class Scoring{
@@ -34,6 +34,20 @@ class Scoring{
 
     static get_score_on_table(first_sc,second_sc,dom_el){
         dom_el.textContent = `Счёт ${first_sc.points} : ${second_sc.points}`;
+    }
+    toString(){
+        return `${this.player}`;
+    }
+    insert_local(other){
+        if (window.localStorage){
+            if (this._points - other._points >= localStorage.getItem("record_max_diff")){
+                localStorage.setItem("record",`${this._points} : ${other._points}`);
+                document.getElementById("record_value").textContent = localStorage["record"];
+                max_different_score = this._points - other._points;
+                document.getElementById("record").style.display = "block";
+                localStorage.setItem("record_max_diff", max_different_score);
+            }
+        }
     }
 }
 
@@ -98,6 +112,7 @@ function set_user(){
         setTimeout(function(){alert_message("Вы выиграли!","images/funny.jpg","Здорово!","#00ff55")},300);
         User_scoring.increase_points();
         Scoring.get_score_on_table(User_scoring,Computer_scoring,dom_el_score);
+        User_scoring.insert_local(Computer_scoring);
         return;
     }
     else if (checkDraw()){
