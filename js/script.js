@@ -3,13 +3,15 @@ let gridSize = 3;
 let gameBoard = [];
 let level = "easy";
 let count_free;
-let count_user_wins = 0;
-let count_computer_wins = 0;
 let footer = document.getElementsByClassName("end")[0];
 let timer;
 let gameover = false;
 let dom_el_score = document.getElementById("score");
 let max_different_score = 0;
+let first_hard_coor;
+let second_hard_coor;
+let flag_hard_possible = false;
+
 
 //Класс количества очков
 class Scoring{
@@ -40,7 +42,7 @@ class Scoring{
     }
     insert_local(other){
         if (window.localStorage){
-            if (this._points - other._points >= localStorage.getItem("record_max_diff")){
+            if (this._points - other._points > localStorage.getItem("record_max_diff")){
                 localStorage.setItem("record",`${this._points} : ${other._points}`);
                 document.getElementById("record_value").textContent = localStorage["record"];
                 max_different_score = this._points - other._points;
@@ -119,28 +121,31 @@ function set_user(){
         setTimeout(function(){alert_message("Ничья!","images/net.jpg","Я лишь поддался!","grey")},300);
     }
     let dangerous;
-    let possible;
     if (level == "hard"){
-        let try_X_res = dangerous_possible(x,y);
-        dangerous = try_X_res[0];
-        //possible = try_X_res[1];
+        if (flag_hard_possible){
+            dangerous = [first_hard_coor,second_hard_coor];
+            setTimeout(function(){set_computer(dangerous)},300);
+            return;
+        }
+        let try_X_res = dangerous_possible(x,y,'X');
+        dangerous =  try_X_res[0];
         if (dangerous.length > 0 && dangerous.every(el =>el >= 0)){
-            possible = [];
             dangerous = try_X_res[0];
-            console.log(try_X_res[0]);       
-
+        }
+        if (flag_hard_possible){
+            dangerous = [first_hard_coor,second_hard_coor];
         }
         //else{
             //let try_0_res = dangerous_possible(x,y,"0");
             //dangerous = try_0_res[0];
             //};
         }
-        setTimeout(function(){set_computer(dangerous,possible)},300);
+        setTimeout(function(){set_computer(dangerous)},300);
     }
 
 
 
-function set_computer(dangerous,possible){
+function set_computer(dangerous){
     if (count_free <= 0)
         return;
     count_free -= 1;
@@ -170,7 +175,7 @@ function set_computer(dangerous,possible){
         }
     }
     else if (level == "hard"){
-        difficult(dangerous,possible);
+        difficult(dangerous);
         if(evaluate(gameBoard,"0")){
             Computer_scoring.increase_points();
             Scoring.get_score_on_table(User_scoring,Computer_scoring,dom_el_score);
@@ -336,21 +341,26 @@ function count_elements(massiv,element){
 
 
 
-function emptySquares() {
-    let moves = [];
-    for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
-            if (gameBoard[i][j] == '') {
-                moves.push([i, j]);
-            }
-        }
-    }
-    return moves;
-}
+
 
 function difficult(dangerous){
-    let main_diagonal = get_main_diagonal();
-    let side_diagonal = get_side_diagonal();
+    //let main_diagonal = get_main_diagonal();
+    //let side_diagonal = get_side_diagonal();
+    if (flag_hard_possible && gameBoard[first_hard_coor][second_hard_coor] == ''){
+        flag_hard_possible = false;
+        gameBoard[first_hard_coor][second_hard_coor] = "0";
+        console.log(first_hard_coor,second_hard_coor)
+        document.getElementById(`${first_hard_coor} ${second_hard_coor}`).textContent = "0";
+        return;
+    }
+    function set_possible(){
+        let possible = dangerous_possible(first_hard_coor,second_hard_coor,'0')[0];
+        if (possible.length > 0 && possible.every(el =>el >= 0)){
+            first_hard_coor = possible[0];
+            second_hard_coor = possible[1];
+            flag_hard_possible = true;
+        }
+    }
     if(dangerous.length > 0 && dangerous.every(el =>el >= 0)){
         let first = dangerous[0];
         let second = dangerous[1];
@@ -358,39 +368,37 @@ function difficult(dangerous){
         if (cell == ""){
             gameBoard[first][second] = "0";
             document.getElementById(`${first} ${second}`).textContent = "0";
+            set_possible();
             return;
         }
     }
     let is_succes = false;
-    let first;
-    let second;
     while(!is_succes){
-        first = parseInt(Math.random() * gridSize);
-        second = parseInt(Math.random() * gridSize);
-        let random_cell = gameBoard[first][second];
+        first_hard_coor = parseInt(Math.random() * gridSize);
+        second_hard_coor = parseInt(Math.random() * gridSize);
+        let random_cell = gameBoard[first_hard_coor][second_hard_coor];
         if (random_cell == ""){
             is_succes = true;
-            gameBoard[first][second] = "0";
-            document.getElementById(`${first} ${second}`).textContent = "0";
+            gameBoard[first_hard_coor][second_hard_coor] = "0";
+            document.getElementById(`${first_hard_coor} ${second_hard_coor}`).textContent = "0";
+            set_possible();
         }
     }
 }
 
 
 
-function dangerous_possible(row,col,){
+function dangerous_possible(row,col,player){
     let massiv = [];
     let dangerous = [];
     let possible = [];
     let ind = -1;
-    row_check = check_line(gameBoard[row],"X");
-    if (row_check == gridSize - 1 || row_check == 0){
+    row_check = check_line(gameBoard[row],player);
+    if (row_check == gridSize - 1 ){
         ind = gameBoard[row].indexOf("");
-        if (row_check == gridSize - 1)
-            dangerous = [row, ind];
+        dangerous = [row, ind];
         //else possible = [row,ind];
     }
-    console.log(row_check);
     let columns = [];
     let main_diagonal = [];
     let side_diagonal = [];
@@ -403,29 +411,24 @@ function dangerous_possible(row,col,){
             }
         }
     }
-    let col_check = check_line(columns,"X");
-    console.log(col_check);
-    if (col_check == gridSize - 1 || col_check == 0){
+    let col_check = check_line(columns,player);
+    if (col_check == gridSize - 1){
         ind = columns.indexOf("");
-        if (col_check == gridSize - 1)
-            dangerous = [ind,col];
+        dangerous = [ind,col];
         //else possible = [ind,col];
     }
-    let main_diagonal_check = check_line(main_diagonal,"X");
-    console.log(main_diagonal_check);
+    let main_diagonal_check = check_line(main_diagonal,player);
 
-    if (main_diagonal_check == gridSize - 1 || main_diagonal_check == 0){
+    if (main_diagonal_check == gridSize - 1){
         ind = main_diagonal.indexOf(""); 
-        if (main_diagonal_check == gridSize - 1)
-            dangerous = [ind,ind];
+        dangerous = [ind,ind];
         //else possible = [ind,ind];
     }
 
-    side_diagonal_check = check_line(side_diagonal,"X");
-    if (side_diagonal_check == gridSize - 1|| side_diagonal_check == 0){
+    side_diagonal_check = check_line(side_diagonal,player);
+    if ( side_diagonal_check == gridSize - 1){
         ind = side_diagonal.indexOf("");
-        if (side_diagonal_check == gridSize - 1)
-            dangerous = [ind, gridSize - ind - 1];
+        dangerous = [ind, gridSize - ind - 1];
         //else possible = [ind,gridSize - ind - 1 ];
     }
     //return [dangerous,possible];
